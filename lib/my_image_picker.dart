@@ -404,6 +404,7 @@ class ImagePickerComponent extends StatelessWidget {
         token: token ?? "",
         useDescriptionFieldAsQuery: useDescriptionFieldAsQuery,
         onUploaded: (resut) {
+          value.uploadResult = resut;
           if (onUploaded != null) {
             onUploaded!(resut);
           } else {
@@ -1169,6 +1170,7 @@ class ImagePickerValue {
   int uploadedSize = 0;
   int fileSize = 0;
   Future<bool> Function()? beforeUpload;
+  String? uploadResult;
 
   ImagePickerValue({
     this.loadData = false,
@@ -1181,6 +1183,7 @@ class ImagePickerValue {
     this.filePath,
     this.uploadedId,
     this.imageDescription,
+    this.uploadResult,
     this.state = ImagePickerComponentState.Enable,
   });
 }
