@@ -27,6 +27,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
   final double? popUpHeight;
   final double? popUpWidth;
   final int? imageQuality;
+  final int? compresedImageQuality;
   final ValueChanged<ImagePickerController>? onTap;
   final String? uplaodField;
   final String? uploadUrl;
@@ -82,6 +83,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
     this.onTap,
     this.builder,
     this.imageQuality,
+    this.compresedImageQuality,
     this.uplaodField,
     this.uploadUrl,
     this.deleteUrl,
@@ -169,6 +171,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
                 controller: imagePickerController,
                 onTap: onTap,
                 imageQuality: imageQuality,
+                compressImageQuality: compresedImageQuality,
                 useDescriptionFieldAsQuery: useDescriptionFieldAsQuery,
                 uploadUrl: uploadUrl,
                 deleteUrl: deleteUrl,

@@ -32,6 +32,7 @@ class ImagePickerComponent extends StatelessWidget {
   final double? containerHeight;
   final double? containerWidth;
   final int? imageQuality;
+  final int? compressImageQuality;
   final String? uploadUrl;
   final String? uploadField;
   final String? descriptionField;
@@ -80,6 +81,7 @@ class ImagePickerComponent extends StatelessWidget {
     @required this.containerHeight,
     @required this.containerWidth,
     this.imageQuality,
+    this.compressImageQuality,
     this.uploadUrl,
     this.deleteUrl,
     this.uploadField,
@@ -118,6 +120,7 @@ class ImagePickerComponent extends StatelessWidget {
       valueListenable: controller,
       builder: (context, value, child) {
         controller.value.context = context;
+        controller.value.quality = compressImageQuality ?? 25;
         if (showDescription == true) {
           controller.value.beforeUpload = () {
             return showModalDescription(context);
@@ -820,8 +823,8 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
 
       String valueBase64Compress = "";
       value.fileImage = image;
-      value.base64 = getExtension(image.toString())! +
-          base64.encode(image.readAsBytesSync());
+      String extention = getExtension(image.toString())!;
+      value.base64 = extention! + base64.encode(image.readAsBytesSync());
       notifyListeners();
 
       return await FlutterImageCompress.compressWithFile(
@@ -863,8 +866,10 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
         onEndGetImage?.call();
       });
     } catch (e) {
-      debugPrint("error on get picture");
-      onEndGetImage?.call();
+      value.error = "error on get picture";
+      value.isUploaded = true;
+      value.state = ImagePickerComponentState.Error;
+      commit();
       rethrow;
     }
   }
