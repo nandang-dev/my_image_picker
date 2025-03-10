@@ -803,9 +803,8 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
         await Permission.photos.request();
         PermissionStatus access2 = await Permission.photos.status;
         if (access2.isGranted == true) {
-          XFile? xFile = await ImagePicker().pickMedia(
-            imageQuality: imageQuality,
-          );
+          XFile? xFile = await ImagePicker().pickImage(
+              imageQuality: imageQuality, source: ImageSource.gallery);
           picker = PickedFile(xFile!.path);
         } else {
           openModalErrorMessage(
