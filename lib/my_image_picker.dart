@@ -38,6 +38,7 @@ class ImagePickerComponent extends StatelessWidget {
   final String? descriptionField;
   final String? deleteUrl;
   final String? token;
+  final ObjectBuilder<Map<String, String>>? setOnUploadQueryParams;
   final ValueChanged<String>? onUploaded;
   final ValueChanged<dynamic>? onUploadFailed;
   final bool? checkRequirement;
@@ -107,6 +108,7 @@ class ImagePickerComponent extends StatelessWidget {
     this.useDescriptionFieldAsQuery = true,
     this.isDirectUpload = false,
     this.descriptionField,
+    this.setOnUploadQueryParams,
   }) {
     if (isDirectUpload) {
       assert(uploadUrl != null && uploadUrl!.isNotEmpty,
@@ -409,6 +411,7 @@ class ImagePickerComponent extends StatelessWidget {
             debugPrint(resut);
           }
         },
+        query: setOnUploadQueryParams?.call(),
         onUploaderror: (onError) {
           if (onUploadFailed != null) {
             onUploadFailed!(onError);
@@ -961,6 +964,7 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
     ValueChanged<dynamic>? onUploaderror,
     required bool useDescriptionFieldAsQuery,
     required ValueChanged<ImagePickerController> onChange,
+    Map<String, String>? query,
   }) async {
     if (value.fileImage == null) {
       return;
@@ -968,6 +972,8 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
 
     try {
       debugPrint("upload url... $url");
+      debugPrint("upload field... $field");
+      debugPrint("upload iamge... ${value.fileImage?.path}");
       value.uploadedSize = 0;
       value.fileSize = 0;
       value.isUploaded = false;
@@ -979,6 +985,7 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
         token: token,
         description: value.imageDescription,
         descriptionField: descriptionField,
+        queryParam: query ?? {},
         onUploadProgress: (
           uploaded,
           fileSize,

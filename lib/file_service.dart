@@ -19,13 +19,16 @@ class FileServiceUtil {
     Map<String, dynamic>? header,
     OnUploadProgressCallback? onUploadProgress,
     required bool useDescriptionFieldAsQuery,
+    Map<String, String> queryParam = const {},
   }) async {
     assert(file != null);
 
     final httpClient = HttpClient()
       ..connectionTimeout = const Duration(seconds: 10);
 
-    Map<String, String> query = {};
+    Map<String, String> query = queryParam.map((key, value) {
+      return MapEntry(key, value);
+    });
 
     Uri oldUri = Uri.parse(url!);
 
