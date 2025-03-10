@@ -2,6 +2,7 @@ library my_image_picker;
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -411,7 +412,7 @@ class ImagePickerComponent extends StatelessWidget {
             debugPrint(resut);
           }
         },
-        query: setOnUploadQueryParams?.call(),
+        setQueryParams: setOnUploadQueryParams,
         onUploaderror: (onError) {
           if (onUploadFailed != null) {
             onUploadFailed!(onError);
@@ -964,7 +965,7 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
     ValueChanged<dynamic>? onUploaderror,
     required bool useDescriptionFieldAsQuery,
     required ValueChanged<ImagePickerController> onChange,
-    Map<String, String>? query,
+    ObjectBuilder<Map<String, String>>? setQueryParams,
   }) async {
     if (value.fileImage == null) {
       return;
@@ -985,7 +986,7 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
         token: token,
         description: value.imageDescription,
         descriptionField: descriptionField,
-        queryParam: query ?? {},
+        queryParam: setQueryParams?.call() ?? {},
         onUploadProgress: (
           uploaded,
           fileSize,
