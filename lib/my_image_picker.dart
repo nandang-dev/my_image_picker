@@ -985,11 +985,11 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
       commit();
       await FileServiceUtil.fileUploadMultipart(
         field: field,
-        file: value.fileImage,
+        file: value.fileImage!,
         url: url,
         token: token,
         description: value.imageDescription,
-        descriptionField: descriptionField,
+        descriptionField: descriptionField ?? "description",
         queryParam: setQueryParams?.call() ?? {},
         onUploadProgress: (
           uploaded,
