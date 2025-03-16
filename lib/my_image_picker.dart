@@ -400,7 +400,7 @@ class ImagePickerComponent extends StatelessWidget {
     if (value.onProgressUpload == false &&
         value.state == ImagePickerComponentState.Enable) {
       controller.uploadFile(
-        (value.uploadedUrl ?? "").isNotEmpty && getUpdateUrl != null
+        (value.uploadedId != null) && getUpdateUrl != null
             ? getUpdateUrl!(value)
             : uploadUrl ?? "",
         uploadField ?? "file",
