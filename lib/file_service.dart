@@ -10,106 +10,51 @@ typedef OnUploadProgressCallback = void Function(int sentBytes, int totalBytes);
 class FileServiceUtil {
   // static String baseUrl = ;
   static Future<String> fileUploadMultipart({
-    @required File? file,
-    @required String? url,
-    @required String? description,
-    String? field,
+    required File file,
+    required String url,
+    String? description,
+    String field = "media",
     String? token,
-    String? descriptionField,
-    Map<String, dynamic>? header,
-    OnUploadProgressCallback? onUploadProgress,
+    String descriptionField = "description",
+    Map<String, String>? header,
     required bool useDescriptionFieldAsQuery,
     Map<String, String> queryParam = const {},
+    OnUploadProgressCallback? onUploadProgress,
   }) async {
-    assert(file != null);
+    Uri uri = Uri.parse(url).replace(queryParameters: queryParam);
 
-    final httpClient = HttpClient()
-      ..connectionTimeout = const Duration(seconds: 10);
+    var request = http.MultipartRequest("POST", uri);
 
-    Map<String, String> query = queryParam.map((key, value) {
-      return MapEntry(key, value);
-    });
+    request.files.add(await http.MultipartFile.fromPath(field, file.path));
 
-    Uri oldUri = Uri.parse(url!);
-
-    Uri uri = Uri(
-      host: oldUri.host,
-      port: oldUri.port,
-      scheme: oldUri.scheme,
-      fragment: oldUri.fragment,
-      path: oldUri.path,
-      queryParameters: query,
-      userInfo: oldUri.userInfo,
-    );
-
-    final request = await httpClient.postUrl(uri);
-
-    int byteCount = 0;
-
-    var multipart =
-        await http.MultipartFile.fromPath(field ?? "media", file!.path);
-
-    var requestMultipart = http.MultipartRequest(
-      "POST",
-      Uri.parse("uri"),
-    );
-
-    requestMultipart.files.add(multipart);
-    if (useDescriptionFieldAsQuery) {
-      if (description != null) {
-        requestMultipart.fields[descriptionField ?? "description"] =
-            description;
-      }
+    if (useDescriptionFieldAsQuery && description != null) {
+      request.fields[descriptionField] = description;
     }
 
-    var msStream = requestMultipart.finalize();
+    // Tambahkan header jika ada
+    if (token != null && token.isNotEmpty) {
+      request.headers[HttpHeaders.authorizationHeader] = token;
+    }
 
-    var totalByteLength = requestMultipart.contentLength;
+    if (header != null) {
+      request.headers.addAll(header);
+    }
 
-    request.contentLength = totalByteLength;
+    //add header content type
+    request.headers[HttpHeaders.contentTypeHeader] = "multipart/form-data";
 
-    request.headers.set(HttpHeaders.contentTypeHeader,
-        requestMultipart.headers[HttpHeaders.contentTypeHeader]!);
+    debugPrint("Uploading to: ${request.url}");
+    debugPrint("Headers: ${request.headers}");
+    debugPrint("Fields: ${request.fields}");
+    debugPrint("Files: ${request.files.map((f) => f.filename).toList()}");
 
-    request.headers.set(HttpHeaders.authorizationHeader, token ?? "");
+    var response = await request.send();
 
-    header?.forEach((key, value) {
-      request.headers.set(key, value);
-    });
-
-    Stream<List<int>> streamUpload = msStream.transform(
-      StreamTransformer.fromHandlers(
-        handleData: (data, sink) {
-          sink.add(data);
-
-          byteCount += data.length;
-
-          if (onUploadProgress != null) {
-            onUploadProgress(byteCount, totalByteLength);
-            // CALL STATUS CALLBACK;
-          }
-        },
-        handleError: (error, stack, sink) {
-          throw error;
-        },
-        handleDone: (sink) {
-          sink.close();
-          // UPLOAD DONE;
-        },
-      ),
-    );
-
-    await request.addStream(streamUpload);
-
-    final httpResponse = await request.close();
-//
-    var statusCode = httpResponse.statusCode;
-
-    if (statusCode ~/ 100 != 2) {
+    if (response.statusCode ~/ 100 != 2) {
       throw Exception(
-          'Error uploading file, Status code: ${httpResponse.statusCode}');
+          'Error uploading file, Status code: ${response.statusCode}');
     } else {
-      return await readResponseAsString(httpResponse);
+      return await response.stream.bytesToString();
     }
   }
 
