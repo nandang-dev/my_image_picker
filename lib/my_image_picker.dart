@@ -35,6 +35,7 @@ class ImagePickerComponent extends StatelessWidget {
   final int? compressImageQuality;
   final String? uploadUrl;
   final String? uploadField;
+  final ObjectBuilderWithParam<String, ImagePickerValue>? getUpdateUrl;
   final String? descriptionField;
   final String? deleteUrl;
   final String? token;
@@ -84,6 +85,7 @@ class ImagePickerComponent extends StatelessWidget {
     this.imageQuality,
     this.compressImageQuality,
     this.uploadUrl,
+    this.getUpdateUrl,
     this.deleteUrl,
     this.uploadField,
     this.onUploaded,
@@ -398,7 +400,9 @@ class ImagePickerComponent extends StatelessWidget {
     if (value.onProgressUpload == false &&
         value.state == ImagePickerComponentState.Enable) {
       controller.uploadFile(
-        uploadUrl ?? "",
+        value.isUploaded && getUpdateUrl != null
+            ? getUpdateUrl!(value)
+            : uploadUrl ?? "",
         uploadField ?? "file",
         descriptionField,
         token: token ?? "",
