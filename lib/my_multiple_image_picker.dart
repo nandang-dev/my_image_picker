@@ -21,7 +21,8 @@ class MultipleImagePickerComponent extends StatelessWidget {
   final WidgetFromDataBuilder2<VoidCallback, VoidCallback>? popUpChild;
   final WidgetFromDataBuilder<VoidCallback>? buttonCamera;
   final WidgetFromDataBuilder<VoidCallback>? buttonGalery;
-  final ObjectBuilder<Map<String, String>>? setOnUploadQueryParams;
+  final ObjectBuilderWithParam<Map<String, String>, ImagePickerValue>?
+      setOnUploadQueryParams;
   final BoxDecoration? popUpDecoration;
   final EdgeInsetsGeometry? popUpMargin;
   final EdgeInsetsGeometry? popUpPadding;
