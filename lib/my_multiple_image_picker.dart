@@ -460,7 +460,10 @@ class MultipleImagePickerComponent extends StatelessWidget {
                                           Theme.of(context).colorScheme.primary,
                                     ),
                                     child: Text(
-                                      openGalleryLabel ?? 'Gallery',
+                                      openGalleryLabel ??
+                                          (useDocumentPicker == false
+                                              ? 'Gallery'
+                                              : 'Document'),
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium
