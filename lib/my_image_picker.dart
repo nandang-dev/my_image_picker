@@ -3,6 +3,7 @@ library my_image_picker;
 import 'dart:convert';
 import 'dart:io';
 import 'package:camera/camera.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
@@ -61,6 +62,7 @@ class ImagePickerComponent extends StatelessWidget {
   final bool? showDescription;
   final bool useDescriptionFieldAsQuery;
   final bool isDirectUpload;
+  final bool? useDocumentPicker;
 
   ImagePickerComponent({
     super.key,
@@ -112,6 +114,7 @@ class ImagePickerComponent extends StatelessWidget {
     this.isDirectUpload = false,
     this.descriptionField,
     this.setOnUploadQueryParams,
+    this.useDocumentPicker = false,
   }) {
     if (isDirectUpload) {
       assert(uploadUrl != null && uploadUrl!.isNotEmpty,
@@ -160,6 +163,7 @@ class ImagePickerComponent extends StatelessWidget {
                                         ? true
                                         : false
                                     : false,
+                                useDocumentPicker: useDocumentPicker ?? false,
                               );
                             } else if (galery == true) {
                               controller.getImages(
@@ -174,6 +178,7 @@ class ImagePickerComponent extends StatelessWidget {
                                         ? true
                                         : false
                                     : false,
+                                useDocumentPicker: useDocumentPicker ?? false,
                               );
                             }
                           }
@@ -331,18 +336,18 @@ class ImagePickerComponent extends StatelessWidget {
     memorySpaceCheck(context).then((result) {
       if (result == true) {
         controller.getImages(
-          camera: false,
-          imageQuality: imageQuality ?? 30,
-          onImageLoaded: onImageLoaded,
-          onStartGetImage: onStartGetImage,
-          onEndGetImage: onEndGetImage,
-          onChange: onChange,
-          isDirectUpload: isDirectUpload
-              ? uploadUrl == null || uploadUrl != ""
-                  ? true
-                  : false
-              : false,
-        );
+            camera: false,
+            imageQuality: imageQuality ?? 30,
+            onImageLoaded: onImageLoaded,
+            onStartGetImage: onStartGetImage,
+            onEndGetImage: onEndGetImage,
+            onChange: onChange,
+            isDirectUpload: isDirectUpload
+                ? uploadUrl == null || uploadUrl != ""
+                    ? true
+                    : false
+                : false,
+            useDocumentPicker: useDocumentPicker ?? false);
       }
     });
   }
@@ -364,6 +369,7 @@ class ImagePickerComponent extends StatelessWidget {
                   ? true
                   : false
               : false,
+          useDocumentPicker: useDocumentPicker ?? false,
         );
       }
     });
@@ -544,26 +550,36 @@ class ImagePickerComponent extends StatelessWidget {
   }
 
   Widget memoryImageMode(ImagePickerValue value) {
+    String defaultImage =
+        "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";
     return Container(
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.all(10),
       decoration: value.valueUri != null
           ? BoxDecoration(
               image: DecorationImage(
                 image: MemoryImage(value.valueUri!.contentAsBytes()),
               ),
             )
-          : null,
+          : BoxDecoration(
+              image: DecorationImage(
+                image: MemoryImage(base64Decode(defaultImage)),
+              ),
+            ),
     );
   }
 
   Widget networkImageMode(ImagePickerValue value) {
+    String defaultImage =
+        "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";
     return Container(
       margin: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage(value.uploadedUrl ?? ""),
-        ),
-      ),
+      child: Image.network(value.uploadedUrl ?? "", fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+        return Image.memory(
+          base64Decode(defaultImage),
+          fit: BoxFit.cover,
+        );
+      }),
     );
   }
 
@@ -768,6 +784,8 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
       result = "data:image/jpg;base64,";
     } else if (data == "gif") {
       result = "data:image/gif;base64,";
+    } else {
+      result = "data:image/png;base64,";
     }
     return result;
   }
@@ -785,6 +803,7 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
     VoidCallback? onStartGetImage,
     VoidCallback? onEndGetImage,
     ValueChanged<ImagePickerController>? onChange,
+    required bool useDocumentPicker,
     required bool isDirectUpload,
   }) async {
     onStartGetImage?.call();
@@ -812,9 +831,17 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
         await Permission.photos.request();
         PermissionStatus access2 = await Permission.photos.status;
         if (access2.isGranted == true) {
-          XFile? xFile = await ImagePicker().pickImage(
-              imageQuality: imageQuality, source: ImageSource.gallery);
-          picker = PickedFile(xFile!.path);
+          if (useDocumentPicker) {
+            FilePickerResult? xFile = await FilePicker.platform.pickFiles(
+              type: FileType
+                  .any, // Bisa diganti dengan FileType.image, FileType.video, dll.
+            );
+            picker = PickedFile(xFile!.files.single.path!);
+          } else {
+            XFile? xFile = await ImagePicker().pickImage(
+                imageQuality: imageQuality, source: ImageSource.gallery);
+            picker = PickedFile(xFile!.path);
+          }
         } else {
           openModalErrorMessage(
             value.context!,
@@ -831,9 +858,14 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
 
       String valueBase64Compress = "";
       value.fileImage = image;
-      String extention = getExtension(image.toString())!;
-      value.base64 = extention! + base64.encode(image.readAsBytesSync());
-      notifyListeners();
+
+      try {
+        String extention = getExtension(image.toString())!;
+        value.base64 = extention! + base64.encode(image.readAsBytesSync());
+        notifyListeners();
+      } catch (e) {
+        notifyListeners();
+      }
 
       return await FlutterImageCompress.compressWithFile(
         image.absolute.path,
@@ -849,12 +881,20 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
           return false;
         }
 
-        valueBase64Compress =
-            getExtension(image.toString())! + base64.encode(a!);
-        value.base64Compress = valueBase64Compress;
-        value.base64 = valueBase64Compress;
-        value.loadData = true;
-        value.valueUri = Uri.parse(valueBase64Compress).data!;
+        if (a != null) {
+          valueBase64Compress =
+              getExtension(image.toString())! + base64.encode(a!);
+          value.base64Compress = valueBase64Compress;
+          value.base64 = valueBase64Compress;
+          value.loadData = true;
+          value.valueUri = Uri.parse(valueBase64Compress).data!;
+        } else {
+          valueBase64Compress = "";
+          value.base64Compress = "";
+          value.loadData = true;
+          value.valueUri = null;
+        }
+
         value.isUploaded = false;
         value.uploadedUrl = null;
         value.state = ImagePickerComponentState.Enable;

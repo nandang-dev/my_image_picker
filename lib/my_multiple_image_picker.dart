@@ -61,6 +61,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
   final String? saveLabel;
   final String? cancelLabel;
   final String? addDescriptionLabel;
+  final bool? useDocumentPicker;
 
   MultipleImagePickerComponent(
       {super.key,
@@ -114,6 +115,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
       this.saveLabel,
       this.cancelLabel,
       this.addDescriptionLabel,
+      this.useDocumentPicker = false,
       this.setOnUploadQueryParams}) {
     if (isDirectUpload) {
       assert(uploadUrl != null && uploadUrl!.isNotEmpty,
@@ -183,6 +185,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
                 token: token,
                 canReupload: canReupload,
                 setOnUploadQueryParams: setOnUploadQueryParams,
+                useDocumentPicker: useDocumentPicker,
                 onUploaded: (val) {
                   controller.setState(() {
                     if (onUploaded != null) {
@@ -342,6 +345,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
                   onChange!(controller, null);
                 }
               },
+              useDocumentPicker: useDocumentPicker ?? false,
             );
           }
         },
@@ -485,6 +489,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
       onEndGetImage: onEndGetImage,
       onStartGetImage: onStartGetImage,
       onChange: (p0) => onChange!(controller, null),
+      useDocumentPicker: useDocumentPicker ?? false,
     );
   }
 
@@ -497,6 +502,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
       onEndGetImage: onEndGetImage,
       onStartGetImage: onStartGetImage,
       onChange: (p0) => onChange!(controller, null),
+      useDocumentPicker: useDocumentPicker ?? false,
     );
   }
 }
@@ -515,6 +521,7 @@ class MultipleImagePickerController
     VoidCallback? onEndGetImage,
     Function(ImagePickerController)? onChange,
     required bool isDirectUpload,
+    required bool useDocumentPicker,
   }) {
     value.imagePickerControllers!.add(ImagePickerController());
     value.imagePickerControllers!.last.value.context = value.context;
@@ -527,6 +534,7 @@ class MultipleImagePickerController
       onEndGetImage: onEndGetImage,
       onChange: onChange,
       isDirectUpload: isDirectUpload,
+      useDocumentPicker: useDocumentPicker,
     )
         .catchError(
       (e) {
