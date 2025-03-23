@@ -94,25 +94,25 @@ class CameraComponentState extends State<CameraComponent> {
                       onTap: () {
                         widget.controller.changeFlashMode();
                       },
-                      // child: ValueListenableBuilder<CameraValue>(
-                      //   valueListenable:
-                      //       widget.controller.value.cameraController!,
-                      //   builder: (c, d, w) {
-                      //     return Icon(
-                      //       widget.controller.value.cameraController!.value
-                      //                   .flashMode ==
-                      //               FlashMode.auto
-                      //           ? Icons.flash_auto
-                      //           : widget.controller.value.cameraController!
-                      //                       .value.flashMode ==
-                      //                   FlashMode.torch
-                      //               ? Icons.flash_on
-                      //               : Icons.flash_off,
-                      //       color: Colors.white,
-                      //       size: 30,
-                      //     );
-                      //   },
-                      // ),
+                      child: ValueListenableBuilder<CameraValue>(
+                        valueListenable:
+                            widget.controller.value.cameraController!,
+                        builder: (c, d, w) {
+                          return Icon(
+                            widget.controller.value.cameraController!.value
+                                        .flashMode ==
+                                    FlashMode.auto
+                                ? Icons.flash_auto
+                                : widget.controller.value.cameraController!
+                                            .value.flashMode ==
+                                        FlashMode.torch
+                                    ? Icons.flash_on
+                                    : Icons.flash_off,
+                            color: Colors.white,
+                            size: 30,
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -138,17 +138,17 @@ class CameraComponentState extends State<CameraComponent> {
                     },
                     child: Container(
                       color: Colors.transparent,
-                      // child: ValueListenableBuilder<CameraValue>(
-                      //   valueListenable:
-                      //       widget.controller.value.cameraController!,
-                      //   builder: (c, d, w) {
-                      //     return const Icon(
-                      //       Icons.sync,
-                      //       color: Colors.white,
-                      //       size: 30,
-                      //     );
-                      //   },
-                      // ),
+                      child: ValueListenableBuilder<CameraValue>(
+                        valueListenable:
+                            widget.controller.value.cameraController!,
+                        builder: (c, d, w) {
+                          return const Icon(
+                            Icons.sync,
+                            color: Colors.white,
+                            size: 30,
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
