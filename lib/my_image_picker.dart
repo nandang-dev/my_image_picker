@@ -56,6 +56,7 @@ class ImagePickerComponent extends StatelessWidget {
   final String? openGaleryLabel;
   final ValueChanged<ImagePickerController>? onChange;
   final String? addDescriptionLabel;
+  final String? emptyImageDescriptionLabel;
   final String? saveLabel;
   final String? cancelLabel;
   final bool? canReupload;
@@ -106,6 +107,7 @@ class ImagePickerComponent extends StatelessWidget {
     this.openGaleryLabel,
     this.onChange,
     this.addDescriptionLabel = "Add Description",
+    this.emptyImageDescriptionLabel = "Add Description",
     this.saveLabel = "Save",
     this.cancelLabel = "Cancel",
     this.canReupload = true,
@@ -531,7 +533,9 @@ class ImagePickerComponent extends StatelessWidget {
                       height: 25,
                       child: Center(
                         child: Text(
-                          value.imageDescription ?? "add description",
+                          value.imageDescription ??
+                              emptyImageDescriptionLabel ??
+                              "",
                           textAlign: TextAlign.center,
                           softWrap: true,
                           overflow: TextOverflow.fade,

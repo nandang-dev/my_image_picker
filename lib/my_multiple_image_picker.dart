@@ -61,6 +61,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
   final String? saveLabel;
   final String? cancelLabel;
   final String? addDescriptionLabel;
+  final String? emptyImageDescriptionLabel;
   final bool? useDocumentPicker;
 
   MultipleImagePickerComponent(
@@ -115,6 +116,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
       this.saveLabel,
       this.cancelLabel,
       this.addDescriptionLabel,
+      this.emptyImageDescriptionLabel,
       this.useDocumentPicker = false,
       this.setOnUploadQueryParams}) {
     if (isDirectUpload) {
@@ -219,6 +221,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
                 saveLabel: saveLabel,
                 cancelLabel: cancelLabel,
                 addDescriptionLabel: addDescriptionLabel,
+                emptyImageDescriptionLabel: emptyImageDescriptionLabel,
               ),
             ),
           ),
