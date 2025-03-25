@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,7 +22,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
   final WidgetFromDataBuilder2<VoidCallback, VoidCallback>? popUpChild;
   final WidgetFromDataBuilder<VoidCallback>? buttonCamera;
   final WidgetFromDataBuilder<VoidCallback>? buttonGalery;
-  final ObjectBuilderWithParam<Map<String, String>, ImagePickerValue>?
+  final ObjectBuilderWith2Param<Map<String, String>, ImagePickerValue, int>?
       setOnUploadQueryParams;
   final BoxDecoration? popUpDecoration;
   final EdgeInsetsGeometry? popUpMargin;
@@ -184,7 +185,11 @@ class MultipleImagePickerComponent extends StatelessWidget {
                 deleteUrl: deleteUrl,
                 token: token,
                 canReupload: canReupload,
-                setOnUploadQueryParams: setOnUploadQueryParams,
+                setOnUploadQueryParams: setOnUploadQueryParams == null
+                    ? null
+                    : (value) {
+                        return setOnUploadQueryParams?.call(value, index) ?? {};
+                      },
                 useDocumentPicker: useDocumentPicker,
                 onUploaded: (val) {
                   controller.setState(() {
