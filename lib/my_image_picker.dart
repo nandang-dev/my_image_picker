@@ -188,6 +188,52 @@ class ImagePickerComponent extends StatelessWidget {
                       });
                     }
               : () {},
+          onLongPress: readOnly == false
+              ? () {
+                  if (!(checkRequirement ?? true)) return;
+                  if (value.isUploaded && canReupload == false) return;
+                  memorySpaceCheck(context).then((result) {
+                    if (result == true) {
+                      if (value.state != ImagePickerComponentState.Disable) {
+                        if (camera == true && galery == true) {
+                          // ignore: use_build_context_synchronously
+                          openModal(context);
+                        } else if (camera == true) {
+                          controller.getImages(
+                            camera: true,
+                            imageQuality: imageQuality ?? 30,
+                            onImageLoaded: onImageLoaded,
+                            onStartGetImage: onStartGetImage,
+                            onEndGetImage: onEndGetImage,
+                            onChange: onChange,
+                            isDirectUpload: isDirectUpload
+                                ? uploadUrl == null || uploadUrl != ""
+                                    ? true
+                                    : false
+                                : false,
+                            useDocumentPicker: useDocumentPicker ?? false,
+                          );
+                        } else if (galery == true) {
+                          controller.getImages(
+                            camera: false,
+                            imageQuality: imageQuality ?? 30,
+                            onImageLoaded: onImageLoaded,
+                            onStartGetImage: onStartGetImage,
+                            onEndGetImage: onEndGetImage,
+                            onChange: onChange,
+                            isDirectUpload: isDirectUpload
+                                ? uploadUrl == null || uploadUrl != ""
+                                    ? true
+                                    : false
+                                : false,
+                            useDocumentPicker: useDocumentPicker ?? false,
+                          );
+                        }
+                      }
+                    }
+                  });
+                }
+              : () {},
           child: container != null
               ? container!((context) {
                   return widgetBuilder(value, context);
@@ -509,11 +555,18 @@ class ImagePickerComponent extends StatelessWidget {
     return SizedBox(
       child: Stack(
         children: [
-          imageContainer != null
-              ? imageContainer!(value)
-              : value.uploadedUrl == null || value.uploadedUrl == ""
-                  ? memoryImageMode(value)
-                  : networkImageMode(value),
+          Align(
+            alignment: Alignment.center,
+            child: SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: imageContainer != null
+                  ? imageContainer!(value)
+                  : value.uploadedUrl == null || value.uploadedUrl == ""
+                      ? memoryImageMode(value)
+                      : networkImageMode(value),
+            ),
+          ),
           showDescription == false
               ? const SizedBox()
               : Align(

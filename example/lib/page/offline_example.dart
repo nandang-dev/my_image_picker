@@ -48,7 +48,7 @@ class _OfflineExampleState extends State<OfflineExample> {
               child: SingleChildScrollView(
                 child: MultipleImagePickerComponent(
                   controller: controller,
-                  size: 150,
+                  size: 100,
                   canReupload: true,
                   onChange: (controller, index) {
                     debugPrint("image index $index changed");
@@ -72,6 +72,20 @@ class _OfflineExampleState extends State<OfflineExample> {
                     });
                     setState(() {});
                     return Future.value(true);
+                  },
+                  onTap: (value) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('tap the image'),
+                        duration: Duration(seconds: 2), // Durasi tampil
+                        action: SnackBarAction(
+                          label: 'Tutup',
+                          onPressed: () {
+                            // Aksi ketika tombol ditekan
+                          },
+                        ),
+                      ),
+                    );
                   },
                 ),
               ),
