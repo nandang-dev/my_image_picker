@@ -203,7 +203,7 @@ class CameraComponentState extends State<CameraComponent> {
                             .setState(CameraComponensStates.onOpenedCamera);
                       },
                       child: const Icon(
-                        FontAwesomeIcons.circleXmark,
+                        FontAwesomeIcons.timesCircle,
                         color: Colors.white,
                         size: 50,
                       ),
@@ -227,7 +227,7 @@ class CameraComponentState extends State<CameraComponent> {
                         }
                       },
                       child: const Icon(
-                        FontAwesomeIcons.circleCheck,
+                        FontAwesomeIcons.checkCircle,
                         color: Colors.white,
                         size: 50,
                       ),
