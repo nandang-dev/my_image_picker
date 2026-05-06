@@ -883,32 +883,52 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
             title: "Permission Required",
             body: "Please allow this app to access your camera to continue",
           );
+          onEndGetImage?.call();
+          return false;
         }
       } else {
-        await Permission.photos.request();
-        PermissionStatus access2 = await Permission.photos.status;
-        if (access2.isGranted == true) {
-          if (useDocumentPicker) {
-            FilePickerResult? xFile = await FilePicker.platform.pickFiles(
-              type: FileType
-                  .any, // Bisa diganti dengan FileType.image, FileType.video, dll.
+        if (Platform.isIOS) {
+          await Permission.photos.request();
+          PermissionStatus access2 = await Permission.photos.status;
+          if (access2.isGranted != true) {
+            openModalErrorMessage(
+              value.context!,
+              title: "Permission Required",
+              body: "Please allow this app to access your gallery to continue",
             );
-            picker = PickedFile(xFile!.files.single.path!);
-          } else {
-            XFile? xFile = await ImagePicker().pickImage(
-                imageQuality: imageQuality, source: ImageSource.gallery);
-            picker = PickedFile(xFile!.path);
+            onEndGetImage?.call();
+            return false;
           }
-        } else {
-          openModalErrorMessage(
-            value.context!,
-            title: "Permission Required",
-            body: "Please allow this app to access your gallery to continue",
+        }
+
+        if (useDocumentPicker) {
+          FilePickerResult? xFile = await FilePicker.platform.pickFiles(
+            type:
+                FileType.any, // Bisa diganti dengan FileType.image, FileType.video, dll.
           );
+          final path = xFile?.files.single.path;
+          if (path == null || path.isEmpty) {
+            onEndGetImage?.call();
+            return false;
+          }
+          picker = PickedFile(path);
+        } else {
+          XFile? xFile = await ImagePicker()
+              .pickImage(imageQuality: imageQuality, source: ImageSource.gallery);
+          if (xFile == null || xFile.path.isEmpty) {
+            onEndGetImage?.call();
+            return false;
+          }
+          picker = PickedFile(xFile.path);
         }
       }
 
-      File image = File(picker!.path);
+      if (picker == null || picker.path.isEmpty) {
+        onEndGetImage?.call();
+        return false;
+      }
+
+      File image = File(picker.path);
       if (image.path.isEmpty) {
         throw "Image path is empty";
       }
