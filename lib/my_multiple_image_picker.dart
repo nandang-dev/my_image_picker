@@ -256,7 +256,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
                         }
                       },
                       child: IconButton(
-                        icon: const Icon(FontAwesomeIcons.timesCircle),
+                        icon: const FaIcon(FontAwesomeIcons.timesCircle),
                         onPressed: () {
                           if (onDeleteImage != null) {
                             onDeleteImage!(imagePickerController, index).then(
