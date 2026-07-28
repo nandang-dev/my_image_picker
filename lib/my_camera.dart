@@ -88,8 +88,7 @@ class CameraComponentState extends State<CameraComponent> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: Container(
-                    color: Colors.transparent,
+                  child: Center(
                     child: GestureDetector(
                       onTap: () {
                         widget.controller.changeFlashMode();
@@ -117,8 +116,7 @@ class CameraComponentState extends State<CameraComponent> {
                   ),
                 ),
                 Expanded(
-                  child: Container(
-                    color: Colors.transparent,
+                  child: Center(
                     child: GestureDetector(
                       onTap: () {
                         widget.controller.takePicture();
@@ -132,12 +130,11 @@ class CameraComponentState extends State<CameraComponent> {
                   ),
                 ),
                 Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      widget.controller.changeCamera();
-                    },
-                    child: Container(
-                      color: Colors.transparent,
+                  child: Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        widget.controller.changeCamera();
+                      },
                       child: ValueListenableBuilder<CameraValue>(
                         valueListenable:
                             widget.controller.value.cameraController!,
@@ -195,8 +192,7 @@ class CameraComponentState extends State<CameraComponent> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: Container(
-                    color: Colors.transparent,
+                  child: Center(
                     child: GestureDetector(
                       onTap: () {
                         widget.controller
@@ -211,8 +207,7 @@ class CameraComponentState extends State<CameraComponent> {
                   ),
                 ),
                 Expanded(
-                  child: Container(
-                    color: Colors.transparent,
+                  child: Center(
                     child: GestureDetector(
                       onTap: () {
                         widget.controller.value.cameraController!
