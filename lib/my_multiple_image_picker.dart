@@ -135,6 +135,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
       valueListenable: controller,
       builder: (context, value, child) {
         controller.value.context = context;
+        controller.attachAddHandler(() => triggerAdd(context));
         return controller.value.imagePickerControllers!.isEmpty
             ? placeHolder == null || placeHolder?.call(context) == null
                 ? inputImage(context, value.imagePickerControllers!)
@@ -332,6 +333,31 @@ class MultipleImagePickerComponent extends StatelessWidget {
     );
   }
 
+  void triggerAdd(BuildContext context) {
+    if (maxCount != null &&
+        controller.value.imagePickerControllers!.length >=
+            (maxCount ?? 0)) {
+      return;
+    }
+    if (camera == true && galery == true) {
+      openModal(context);
+    } else {
+      controller.add(
+        isDirectUpload: isDirectUpload,
+        camera: camera,
+        onImageLoaded: onImageLoaded,
+        onEndGetImage: onEndGetImage,
+        onStartGetImage: onStartGetImage,
+        onChange: (val) {
+          if (onChange != null) {
+            onChange!(controller, null);
+          }
+        },
+        useDocumentPicker: useDocumentPicker ?? false,
+      );
+    }
+  }
+
   List<Widget> inputImageBuilder(BuildContext context,
       List<ImagePickerController> imagePickerControllers) {
     List<Widget> widget = [];
@@ -343,25 +369,7 @@ class MultipleImagePickerComponent extends StatelessWidget {
 
     if (showAddButton == true) {
       widget.add(GestureDetector(
-        onTap: () {
-          if (camera == true && galery == true) {
-            openModal(context);
-          } else {
-            controller.add(
-              isDirectUpload: isDirectUpload,
-              camera: camera,
-              onImageLoaded: onImageLoaded,
-              onEndGetImage: onEndGetImage,
-              onStartGetImage: onStartGetImage,
-              onChange: (val) {
-                if (onChange != null) {
-                  onChange!(controller, null);
-                }
-              },
-              useDocumentPicker: useDocumentPicker ?? false,
-            );
-          }
-        },
+        onTap: () => triggerAdd(context),
         child: (maxCount != null &&
                 imagePickerControllers.length >= (maxCount ?? 0))
             ? const SizedBox()
@@ -529,6 +537,16 @@ class MultipleImagePickerController
       : super(value ?? MultipleImagePickerValue());
 
   bool? isValid;
+
+  VoidCallback? _addHandler;
+
+  void attachAddHandler(VoidCallback handler) {
+    _addHandler = handler;
+  }
+
+  void triggerAdd() {
+    _addHandler?.call();
+  }
 
   void add({
     bool camera = true,
