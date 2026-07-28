@@ -63,6 +63,8 @@ class MultipleImagePickerComponent extends StatelessWidget {
   final String? addDescriptionLabel;
   final String? emptyImageDescriptionLabel;
   final bool? useDocumentPicker;
+  final WrapAlignment? mainAxisAlignment;
+  final WrapCrossAlignment? crossAxisAlignment;
 
   MultipleImagePickerComponent(
       {super.key,
@@ -118,6 +120,8 @@ class MultipleImagePickerComponent extends StatelessWidget {
       this.addDescriptionLabel,
       this.emptyImageDescriptionLabel,
       this.useDocumentPicker = false,
+      this.mainAxisAlignment,
+      this.crossAxisAlignment,
       this.setOnUploadQueryParams}) {
     if (isDirectUpload) {
       assert(uploadUrl != null && uploadUrl!.isNotEmpty,
@@ -150,7 +154,9 @@ class MultipleImagePickerComponent extends StatelessWidget {
             child: Wrap(
               spacing: 8.0,
               runSpacing: 4.0,
-              crossAxisAlignment: WrapCrossAlignment.end,
+              alignment: mainAxisAlignment ?? WrapAlignment.start,
+              crossAxisAlignment:
+                  crossAxisAlignment ?? WrapCrossAlignment.end,
               children: inputImageBuilder(context, imagePickerControllers),
             ),
           );
